@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Russian Quest 🇷🇺</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f5f7fb;color:#263238}
+.top{background:#fff;border-bottom:1px solid #e4e8ee;position:sticky;top:0;z-index:5}
+.nav{max-width:760px;margin:auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:21px;color:#e74c3c}.stats{display:flex;gap:14px;font-weight:700;font-size:14px}
+.container{max-width:760px;margin:0 auto;padding:22px 18px 90px}
+.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 4px 18px #26323812;margin-bottom:18px}
+h1{font-size:28px;margin:5px 0 8px}.sub{color:#718096;margin:0 0 18px}
+.progress{height:10px;background:#e9edf2;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#58cc02;transition:.3s}
+.lesson{display:flex;gap:15px;align-items:center;border:2px solid #e8edf2;border-radius:17px;padding:16px;margin:12px 0;cursor:pointer;transition:.15s}
+.lesson:hover{transform:translateY(-2px);border-color:#58cc02}.icon{font-size:34px}.lesson h3{margin:0 0 4px}.lesson p{margin:0;color:#718096;font-size:14px}
+button{border:0;border-radius:14px;padding:14px 18px;font-size:16px;font-weight:800;cursor:pointer}
+.primary{background:#58cc02;color:#fff;box-shadow:0 4px 0 #46a302}.primary:active{transform:translateY(3px);box-shadow:none}
+.option{display:block;width:100%;text-align:left;background:#fff;border:2px solid #dfe5eb;margin:10px 0;box-shadow:0 2px 0 #dfe5eb}.option:hover{border-color:#58cc02}.option.correct{background:#dff8d0;border-color:#58cc02}.option.wrong{background:#ffe0e0;border-color:#e74c3c}
+.question{font-size:25px;font-weight:800;margin:20px 0}.translation{color:#718096;margin-bottom:20px}
+.footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e4e8ee;padding:12px;text-align:center}
+.small{font-size:13px;color:#718096}.pill{display:inline-block;background:#fff2c9;padding:6px 10px;border-radius:20px;margin-right:6px;font-weight:700}
+.hidden{display:none}.center{text-align:center}.xp{color:#e67e22}.hearts{color:#e74c3c}
+</style>
+</head>
+<body>
+<div class="top"><div class="nav">
+<div class="logo">🇷🇺 Russian Quest</div>
+<div class="stats"><span class="hearts">❤️ <b id="hearts">5</b></span><span class="xp">⚡ <b id="xp">0</b></span>🔥 <b id="streak">1</b></div>
+</div></div>
+
+<main class="container">
+<section id="home">
+<div class="card">
+<h1>Начни учить русский!</h1>
+<p class="sub">像闯关游戏一样学习俄语，每天练一点。</p>
+<div class="pill">🏆 等级 <span id="level">1</span></div>
+<div class="pill">⭐ XP <span id="homeXp">0</span></div>
+</div>
+
+<div class="card">
+<h2>学习路线</h2>
+<div class="lesson" onclick="startLesson(0)">
+<div class="icon">👋</div><div><h3>第1关：打招呼</h3><p>Привет · Здравствуйте · Пока</p></div>
+</div>
+<div class="lesson" onclick="startLesson(1)">
+<div class="icon">🏠</div><div><h3>第2关：日常生活</h3><p>дом · школа · друг · семья</p></div>
+</div>
+<div class="lesson" onclick="startLesson(2)">
+<div class="icon">🍎</div><div><h3>第3关：食物</h3><p>вода · хлеб · яблоко · чай</p></div>
+</div>
+<div class="lesson" onclick="startLesson(3)">
+<div class="icon">📚</div><div><h3>第4关：基础语法</h3><p>я · ты · он · она</p></div>
+</div>
+</div>
+</section>
+
+<section id="game" class="hidden">
+<div class="card">
+<div style="display:flex;justify-content:space-between"><b id="lessonTitle">第1关</b><span id="qnum">1/5</span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="question" id="question"></div>
+<div class="translation" id="translation"></div>
+<div id="options"></div>
+<div id="feedback" class="hidden"></div>
+</div>
+<button class="primary" id="next" style="width:100%" onclick="nextQuestion()">继续</button>
+<button style="width:100%;margin-top:10px;background:#edf1f5" onclick="goHome()">退出本关</button>
+</section>
+
+<section id="result" class="hidden">
+<div class="card center">
+<div style="font-size:64px">🎉</div>
+<h1>太棒了！</h1>
+<p class="sub">你完成了这一关。</p>
+<h2>+<span id="earned">0</span> XP</h2>
+<button class="primary" onclick="goHome()">返回学习路线</button>
+</div>
+</section>
+</main>
+
+<div class="footer"><span class="small">每天 5 分钟，坚持学俄语 🇷🇺</span></div>
+
+<script>
+const lessons=[
+{title:"第1关：打招呼",qs:[
+["Привет","“你好”用俄语怎么说？",["Привет","Спасибо","Пока","Доброе утро"],0],
+["Спасибо","“谢谢”用俄语怎么说？",["Пожалуйста","Спасибо","Привет","Да"],1],
+["Пока","“再见”用俄语怎么说？",["Пока","Нет","Здравствуйте","Добро"],0],
+["Да","“是”用俄语怎么说？",["Нет","Да","Спасибо","Дом"],1],
+["Здравствуйте","哪个是比较正式的“您好”？",["Пока","Привет","Здравствуйте","Спасибо"],2]
+]},
+{title:"第2关：日常生活",qs:[
+["дом","哪个词表示“家/房子”？",["дом","школа","друг","мама"],0],
+["школа","“学校”是哪个？",["дом","школа","чай","яблоко"],1],
+["друг","“朋友”是哪个？",["друг","учитель","вода","хлеб"],0],
+["мама","“妈妈”用俄语怎么说？",["папа","мама","сестра","брат"],1],
+["семья","“家庭”是哪个？",["семья","школа","город","книга"],0]
+]},
+{title:"第3关：食物",qs:[
+["вода","“水”是哪个？",["чай","вода","хлеб","молоко"],1],
+["хлеб","“面包”是哪个？",["яблоко","хлеб","сыр","вода"],1],
+["яблоко","“苹果”是哪个？",["яблоко","чай","хлеб","мясо"],0],
+["чай","“茶”是哪个？",["кофе","сок","чай","вода"],2],
+["молоко","“牛奶”是哪个？",["молоко","хлеб","сыр","яблоко"],0]
+]},
+{title:"第4关：基础语法",qs:[
+["Я","“我”是哪个？",["Я","Ты","Он","Она"],0],
+["Ты","“你”是哪个？",["Он","Мы","Ты","Я"],2],
+["Он","“他”是哪个？",["Она","Он","Мы","Вы"],1],
+["Она","“她”是哪个？",["Она","Они","Он","Я"],0],
+["Мы","“我们”是哪个？",["Вы","Мы","Ты","Они"],1]
+]}
+];
+
+let currentLesson=0,currentQ=0,score=0,hearts=5,locked=false;
+let xp=Number(localStorage.getItem("rqxp")||0),streak=Number(localStorage.getItem("rqstreak")||1);
+function updateStats(){document.getElementById("xp").textContent=xp;document.getElementById("homeXp").textContent=xp;document.getElementById("streak").textContent=streak;document.getElementById("hearts").textContent=hearts;document.getElementById("level").textContent=Math.floor(xp/100)+1}
+function startLesson(i){currentLesson=i;currentQ=0;score=0;hearts=5;locked=false;document.getElementById("home").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("game").classList.remove("hidden");renderQuestion()}
+function renderQuestion(){
+let q=lessons[currentLesson].qs[currentQ];document.getElementById("lessonTitle").textContent=lessons[currentLesson].title;document.getElementById("qnum").textContent=(currentQ+1)+"/"+lessons[currentLesson].qs.length;document.getElementById("bar").style.width=((currentQ)/lessons[currentLesson].qs.length*100)+"%";document.getElementById("question").textContent=q[0];document.getElementById("translation").textContent=q[1];let box=document.getElementById("options");box.innerHTML="";document.getElementById("feedback").classList.add("hidden");document.getElementById("next").disabled=true;document.getElementById("next").style.opacity=".5";q[2].forEach((x,i)=>{let b=document.createElement("button");b.className="option";b.textContent=x;b.onclick=()=>answer(i,b);box.appendChild(b)})}
+function answer(i,btn){if(locked)return;locked=true;let q=lessons[currentLesson].qs[currentQ];let buttons=document.querySelectorAll(".option");buttons[q[3]].classList.add("correct");if(i===q[3]){score+=20;xp+=20;localStorage.setItem("rqxp",xp);showFeedback("✅ 答对了！ +20 XP",true)}else{btn.classList.add("wrong");hearts--;showFeedback("❌ 正确答案是： "+q[2][q[3]],false);if(hearts<=0){setTimeout(()=>finish(),600);return}}updateStats();document.getElementById("next").disabled=false;document.getElementById("next").style.opacity="1"}
+function showFeedback(t,good){let f=document.getElementById("feedback");f.textContent=t;f.classList.remove("hidden");f.style.padding="12px";f.style.borderRadius="12px";f.style.background=good?"#e5f8dc":"#ffe4e4"}
+function nextQuestion(){if(!locked)return;if(currentQ<lessons[currentLesson].qs.length-1){currentQ++;locked=false;renderQuestion()}else finish()}
+function finish(){document.getElementById("game").classList.add("hidden");document.getElementById("result").classList.remove("hidden");document.getElementById("earned").textContent=score;updateStats()}
+function goHome(){document.getElementById("game").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("home").classList.remove("hidden");updateStats()}
+updateStats();
+</script>
+</body>
+</html>
